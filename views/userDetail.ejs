@@ -1,0 +1,86 @@
+<% layout("/layouts/boilerplate.ejs") %>
+  <%=user._id%>
+
+  <div class="profile-card">
+    <!-- Profile Photo -->
+    <div class="profile-photo">
+      <% if(user.skills[0]?.profilePhoto) { %>
+        <img src="<%=user.skills[0].profilePhoto %>" alt="<%=user.username %>" width="150">
+      <% } else { %>
+        <img src="/default-profile.png" alt="default" width="150">
+      <% } %>
+    </div>
+
+    <!-- User Info -->
+    <h1><%=user.username %></h1>
+    <p>Email: <%=user.email %></p>
+
+    <!-- Skill Details -->
+  <% if (user.skills.length > 0) { %>
+  <p><strong>Location:</strong> <%= user.skills[0].availability %></p>
+  <p><strong>Availability:</strong> <%= user.skills[0].availability %></p>
+
+  <h2>Skills Offered:</h2>
+  <ul>
+    <% for (let skill of user.skills) { %>
+      <li><%= skill.skillsOffered.join(", ") %></li>
+    <% } %>
+  </ul>
+
+  <h2>Skills Wanted:</h2>
+  <ul>
+    <% for (let skill of user.skills) { %>
+      <li><%= skill.skillsWanted.join(", ") %></li>
+    <% } %>
+  </ul>
+<% } else { %>
+  <p>No skills added yet.</p>
+<% } %>
+  </div>
+<button class="request"> <a href="/users/<%=user._id%>/request">Make Request</a></button>
+<br>
+  <p><a href="/users">⬅ Back to All Users</a></p>
+
+  <h3>review</h3>
+  <form method="post" action="/users/<%=user._id%>/review">
+    <lable>comment:</lable>
+    <input id="comment" name="comment" type="text">
+  <!-- Star Rating -->
+  <div class="mb-3 mt-3">
+    <div class="star-rating">
+      <input type="radio" id="star5" name="rating" value="5" required />
+      <label for="star5" title="5 stars">★</label>
+      
+      <input type="radio" id="star4" name="rating" value="4" />
+      <label for="star4" title="4 stars">★</label>
+      
+      <input type="radio" id="star3" name="rating" value="3" />
+      <label for="star3" title="3 stars">★</label>
+      
+      <input type="radio" id="star2" name="rating" value="2" />
+      <label for="star2" title="2 stars">★</label>
+      
+      <input type="radio" id="star1" name="rating" value="1" />
+      <label for="star1" title="1 star">★</label>
+    </div>
+  </div>
+   <button>submit</button>
+  </form>
+
+  <hr>
+  <p>all reviews</p>
+<% if (skills.length > 0 && skills[0].review) { %>
+  <% for(let review of skills[0].review) { %>
+    <div style="display: inline-block; border: 2px solid gray; border-radius: 8px; padding: 10px;">
+      <h5><%= review.createdAt.toLocaleString() %></h5>
+      <h5 class="card-title"><%= review.reviewer.username %></h5>
+      <p><%= review.comment %></p>
+      <% for(let i=0; i < review.rating; i++) { %>
+        <span>⭐</span> 
+      <% } %>
+    </div>
+  <% } %>
+<% } else { %>
+  <p>No reviews available.</p>
+<% } %>
+

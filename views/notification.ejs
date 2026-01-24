@@ -1,0 +1,44 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="container mt-4">
+  <h2>Swap Requests</h2>
+  
+  <ul class="nav nav-tabs mb-3" id="requestTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" id="received-tab" data-bs-toggle="tab" data-bs-target="#received">Received</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="sent-tab" data-bs-toggle="tab" data-bs-target="#sent">Sent</button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="received">
+      <% if (notifications.length > 0) { %>
+        <% notifications.forEach(req => { %>
+          <div class="card mb-2">
+            <div class="card-body">
+              <h6>From: <%= req.sender.username %></h6>
+              <p><%= req.message %></p>
+              <span class="badge bg-info"><%= req.status %></span>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %> <p>No received requests.</p> <% } %>
+    </div>
+
+    <div class="tab-pane fade" id="sent">
+      <% if (sentRequests.length > 0) { %>
+        <% sentRequests.forEach(req => { %>
+          <div class="card mb-2">
+            <div class="card-body">
+              <h6>Sent to: <%= req.receiverName %></h6>
+              <p><%= req.message %></p>
+              <span class="badge bg-secondary"><%= req.status %></span>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %> <p>You haven't sent any requests yet.</p> <% } %>
+    </div>
+  </div>
+</div>

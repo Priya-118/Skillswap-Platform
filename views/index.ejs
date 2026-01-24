@@ -1,0 +1,31 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<h1>🌱 Welcome to Skill Swap</h1>
+<h2>Browse Users</h2>
+
+<div class="container">
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-2">
+    <% for(let u of user) { %> <div class="col">
+        <div class="card mb-4 p-3 shadow-sm" style="border:1px solid #ccc;">
+          <div class="profile-photo text-center mb-2">
+            <% if (u.skills && u.skills[0]?.profilePhoto) { %>
+              <img src="<%= u.skills[0].profilePhoto %>" alt="<%= u.username %>" class="img-fluid rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+            <% } else { %>
+              <img src="/default-profile.png" alt="default" class="img-fluid rounded-circle" style="width: 100px; height: 100px;">
+            <% } %>
+          </div>
+
+          <h3 class="text-center"><%= u.username %></h3>
+
+          <% if(u.skills && u.skills.length > 0) { %>
+              <p><strong>Skills Offered:</strong> <%= u.skills[0].skillsOffered %></p>
+          <% } else { %>
+              <p class="text-muted text-center">No skills added yet.</p>
+          <% } %>
+
+          <a href="/users/<%= u._id %>" class="btn btn-primary w-100 mt-auto">View Profile</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>

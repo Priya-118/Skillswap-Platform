@@ -1,0 +1,12 @@
+<% layout("/layouts/boilerplate.ejs") %>
+  <button onclick="document.getElementById('requestForm').style.display='block'">
+  Make Request
+</button>
+
+<div id="requestForm" style="display:none; border:1px solid gray; padding:10px;">
+<form action="/users/<%= user._id %>/request" method="POST">
+  <textarea name="message" placeholder="Write your message"></textarea><br>
+  <button type="submit">Send Request</button>
+</form>
+
+</div>

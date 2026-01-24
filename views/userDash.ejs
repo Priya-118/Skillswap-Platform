@@ -1,0 +1,51 @@
+<% layout("/layouts/boilerplate.ejs") %>
+  <form method="Post" action="/userdash" >
+  <!-- Name -->
+  <div>
+    <label for="username">Name:</label>
+    <input type="text" id="username" name="username" required>
+  </div>
+
+  <!-- Location -->
+  <div>
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location">
+  </div>
+
+  <!-- Profile Photo -->
+  <div>
+    <label for="profilePhoto">Profile Photo URL:</label>
+    <input type="text" id="profilePhoto" name="profilePhoto">
+    <!-- Or, if uploading a file:
+    <input type="file" id="profilePhoto" name="profilePhoto">
+    -->
+  </div>
+
+  <!-- Skills Offered -->
+  <div>
+    <label for="skillsOffered">Skills Offered (comma-separated):</label>
+    <input type="text" id="skillsOffered" name="skillsOffered">
+  </div>
+
+  <!-- Skills Wanted -->
+  <div>
+    <label for="skillsWanted">Skills Wanted (comma-separated):</label>
+    <input type="text" id="skillsWanted" name="skillsWanted">
+  </div>
+
+  <!-- Availability -->
+  <div>
+    <label for="availability">Availability:</label>
+    <input type="text" id="availability" name="availability">
+  </div>
+
+  <!-- isPublic -->
+  <!-- <div>
+    <label for="isPublic">Make Public:</label>
+    <input type="checkbox" id="isPublic" name="isPublic" checked>
+  </div> -->
+
+  <!-- Submit -->
+  <div>
+    <button type="submit">Submit</button>
+  </div>
