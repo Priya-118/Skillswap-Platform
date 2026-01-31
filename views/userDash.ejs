@@ -1,5 +1,6 @@
 <% layout("/layouts/boilerplate.ejs") %>
-  <form method="Post" action="/userdash" >
+<form method="POST" action="/userdash" enctype="multipart/form-data">
+
   <!-- Name -->
   <div>
     <label for="username">Name:</label>
@@ -14,11 +15,10 @@
 
   <!-- Profile Photo -->
   <div>
-    <label for="profilePhoto">Profile Photo URL:</label>
-    <input type="text" id="profilePhoto" name="profilePhoto">
-    <!-- Or, if uploading a file:
+    <label for="profilePhoto">Profile Photo:</label>
+    <!-- Or, if uploading a file: -->
     <input type="file" id="profilePhoto" name="profilePhoto">
-    -->
+  
   </div>
 
   <!-- Skills Offered -->

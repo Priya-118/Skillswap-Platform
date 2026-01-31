@@ -6,9 +6,11 @@
 <% if (user.skills && user.skills.length > 0) { %>
   <% let skill = user.skills[user.skills.length - 1]; %>
   <div>
-    <strong>Username</strong> <%= skill.username%><br>
+    <strong>Username:</strong> <%= skill.username%><br>
     <strong>Location:</strong> <%= skill.location %><br>
-    <strong>Profile Photo:</strong> <%= skill.profilePhoto %><br>
+    <strong>Profile Photo:</strong><br>
+<img src="/<%= skill.profilePhoto %>" width="150" alt="Profile Photo">
+
     <strong>Skills Offered:</strong> <%= skill.skillsOffered %><br>
     <strong>Skills Wanted:</strong> <%= skill.skillsWanted %><br>
     <strong>Availability:</strong> <%= skill.availability %><br>

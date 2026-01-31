@@ -6,7 +6,10 @@ const { required } = require('joi');
 const skillSchema = new mongoose.Schema({
   username: String,
   location: String,
-  profilePhoto: String,
+  profilePhoto: {
+  type: String,
+  default: "",
+  },
   skillsOffered: [{
     type: [String],
     default: []

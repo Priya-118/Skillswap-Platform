@@ -1,7 +1,6 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
 <h1>🌱 Welcome to Skill Swap</h1>
-<h2>Browse Users</h2>
 
 <div class="container">
   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-2">
@@ -28,4 +27,16 @@
       </div>
     <% } %>
   </div>
+</div>
+
+<div class="pagination col-4 offset-2">
+  <% if (currentPage > 1) { %>
+    <a href="/users?page=<%= currentPage - 1 %>">⬅ Prev</a>
+  <% } %>
+
+  <span>Page <%= currentPage %> of <%= totalPages %></span>
+
+  <% if (currentPage < totalPages) { %>
+    <a href="/users?page=<%= currentPage + 1 %>">Next ➡</a>
+  <% } %>
 </div>

@@ -1,24 +1,19 @@
-.footer{
-  text-decoration: none;
+body{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-.f-info{
-  color: black;
-  background-color: blueviolet;
-  text-align: center;
-  width: 100%;
-  margin-top: 5rem;
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+.container{
+  flex: 1;
+}
+
+.f-info-links a{
   text-decoration: none;
+  color: black;
 }
 .f-info-links a:hover{
   text-decoration: none;
   color: black;
-}
-.f-info-links a{
-  text-decoration: none;
 }
 .f-info-links{
   width: 100%;
@@ -28,6 +23,30 @@
   font-size: 1.3rem;
   
 }
-.notification{
-  text-decoration: none;
+i{
+  margin: 1rem;
+}
+.f-info{
+  text-align: center;
+  display: flex;
+  height: 8rem;
+  background-color: grey;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: space-evenly;
+  margin-top:30px ;
+
+}
+/* .container-fluid{
+  margin-top: 0;
+  height: 4rem;
+  background-color: red;
+  /* width: 100%; */
+  /* display: inline-block; 
+  justify-content: space-between ; */
+/* } */ 
+
+.card{
+border: none;
+text-decoration: none;
 }

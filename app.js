@@ -7,14 +7,20 @@ const path = require("path");
 const User = require("./models/user");
 const Skill = require("./models/skill");
 const Review = require("./models/review");
+const userRouter = require('./routes/user');
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const cookieParser = require("cookie-parser");
+const { isloggedIn } = require("./middleware");
 const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 app.use(flash());
-const { isloggedIn } = require("./middleware");
+// const path = require("path");
+
+
+
+
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
@@ -25,6 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB Connection
 main()
@@ -67,100 +75,11 @@ app.get("/", (req, res) => {
   res.send("working");
 });
 
-app.get("/signin", (req, res) => {
-  res.render("signin");
-});
+//Routes
 
-// auth
-app.post("/signin", async (req, res, next) => {
-  try {
-    let { username, email, password } = req.body;
-    let newUser = new User({ email, username });
+app.use('/', userRouter);
 
-    const RegisterUser = await User.register(newUser, password);
-    await newUser.save();
-    console.log(RegisterUser);
 
-    req.login(RegisterUser, (err) => {
-      if (err) return next(err); //
-      req.flash("success", "Welcome to SkillSwap");
-      res.redirect("/users");
-    });
-  } catch (e) {
-    req.flash("error", `${e.message}`);
-    res.redirect("/signin");
-  }
-});
-// login
-app.get("/login", (req, res) => {
-  res.render("login");
-});
-
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) return next(err);
-    if (!user) {
-      req.flash("error", "Invalid username or password");
-      return res.redirect("/login");
-    }
-    req.logIn(user, (err) => {
-      if (err) return next(err);
-      req.flash("success", "Welcome back!");
-      return res.redirect("/users");
-    });
-  })(req, res, next);
-});
-
-app.get("/logout", (req, res, next) => {
-  req.logOut((err) => {
-    if (err) {
-      return next(err);
-    }
-    req.flash("success", "you are logged out");
-    res.redirect("/");
-  });
-});
-
-app.get("/userDash", (req, res) => {
-  res.render("userDash");
-});
-
-app.post("/userDash", async (req, res) => {
-  try {
-    let {
-      username,
-      location,
-      profilePhoto,
-      skillsOffered,
-      skillsWanted,
-      availability,
-    } = req.body;
-
-    const newSkill = new Skill({
-      username,
-      location,
-      profilePhoto,
-      skillsOffered,
-      skillsWanted,
-      availability,
-      user: req.user._id,
-      // isPublic,
-    });
-    console.log(newSkill);
-    await newSkill.save();
-    const user = await User.findById(req.user._id);
-    user.skills.push(newSkill._id);
-    await user.save();
-
-    req.flash("success", "Skill added to your profile!");
-    //  res.render("showdash", { user });
-    res.redirect("/detailuser");
-  } catch (err) {
-    console.error(err);
-    req.flash("error", "Something went wrong");
-    res.redirect("/error");
-  }
-});
 
 // user dashboard
 app.get("/detailuser", isloggedIn, async (req, res) => {
@@ -182,9 +101,23 @@ app.get("/users", async (req, res) => {
   if (req.user) {
     query = { _id: { $ne: req.user._id } }; // $ne means "Not Equal"
   }
+  //pagination logic=>
+  const LIMIT = 3;
+  const page=parseInt(req.query.page) || 1;
+  const skip= (page -1)*LIMIT;
 
-  let user = await User.find(query).populate("skills");
-  res.render("index", { user });
+  let user = await User.find(query).populate("skills")
+  .sort({createdAt: -1})
+  .skip(skip)
+  .limit(LIMIT);
+
+  const totalUsers=await User.countDocuments(query);
+  const totalPages= Math.ceil(totalUsers/LIMIT);
+  res.render("index", { 
+    user,
+    currentPage : page,
+    totalPages
+   });
 });
 
 //single user
