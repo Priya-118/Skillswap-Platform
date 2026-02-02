@@ -1,6 +1,15 @@
 <% layout("/layouts/boilerplate.ejs") %>
-<form method="POST" action="/userdash" enctype="multipart/form-data">
+<form method="POST" action="/user/<%= user._id %>/detailuser" enctype="multipart/form-data">
+<!-- Profile Photo -->
 
+<div class="row">
+  <div class="col-8 offset-2">
+  <div>
+    <label for="profilePhoto">Profile Photo:</label>
+    <!-- Or, if uploading a file: -->
+    <input type="file" id="profilePhoto" name="profilePhoto">
+  
+  </div>
   <!-- Name -->
   <div>
     <label for="username">Name:</label>
@@ -11,14 +20,6 @@
   <div>
     <label for="location">Location:</label>
     <input type="text" id="location" name="location">
-  </div>
-
-  <!-- Profile Photo -->
-  <div>
-    <label for="profilePhoto">Profile Photo:</label>
-    <!-- Or, if uploading a file: -->
-    <input type="file" id="profilePhoto" name="profilePhoto">
-  
   </div>
 
   <!-- Skills Offered -->
@@ -39,6 +40,8 @@
     <input type="text" id="availability" name="availability">
   </div>
 
+</div>  
+
   <!-- isPublic -->
   <!-- <div>
     <label for="isPublic">Make Public:</label>
@@ -49,3 +52,5 @@
   <div>
     <button type="submit">Submit</button>
   </div>
+
+</div>  

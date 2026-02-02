@@ -50,3 +50,35 @@ i{
 border: none;
 text-decoration: none;
 }
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* gap: 0.5rem; */
+  margin: 1rem 0;
+  font-family: sans-serif;
+}
+
+.pagination a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #333;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.pagination a:hover {
+  background: #007bff;
+  color: #fff;
+}
+
+.pagination .page {
+  font-size: 0.9rem;
+  color: #666;
+  white-space: nowrap;
+}

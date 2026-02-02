@@ -76,13 +76,12 @@ app.get("/", (req, res) => {
 });
 
 //Routes
-
 app.use('/', userRouter);
 
 
 
 // user dashboard
-app.get("/detailuser", isloggedIn, async (req, res) => {
+app.get("/user/:id/detailuser", isloggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate("skills");
     res.render("showdash", { user });
@@ -92,6 +91,30 @@ app.get("/detailuser", isloggedIn, async (req, res) => {
     res.redirect("/");
   }
 });
+// Ensure both GET and POST use the same path if that's what your form points to
+app.post("/user/:id/detailuser", isloggedIn, async (req, res) => { // Added isloggedIn here
+  try {
+    const{id}=req.params;
+    const { username, location, skillsOffered, skillsWanted, availability } = req.body;
+
+    const updateUser = await User.findByIdAndUpdate(id, {
+      username,
+      location,
+      availability,
+      // Safety check: only split if the value exists
+      skillsOffered: skillsOffered ? skillsOffered.split(',').map(s => s.trim()) : [],
+      skillsWanted: skillsWanted ? skillsWanted.split(',').map(s => s.trim()) : []
+    }, { new: true });
+
+    req.flash("success", "Profile updated!");
+    res.redirect(`/user/${id}/detailuser`);
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Something went wrong");
+    res.redirect("/signin");
+  }
+});
+
 //index route
 // Updated Index Route
 app.get("/users", async (req, res) => {
@@ -193,6 +216,7 @@ app.post("/users/:id/request", async (req, res) => {
     status: "pending",
   });
   await receiver.save();
+  req.flash("success", "Request sent successfully!");
   res.redirect(`/users/${id}`);
 });
 

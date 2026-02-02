@@ -29,14 +29,20 @@
   </div>
 </div>
 
-<div class="pagination col-4 offset-2">
+<div class="pagination col-8 offset-2">
   <% if (currentPage > 1) { %>
-    <a href="/users?page=<%= currentPage - 1 %>">⬅ Prev</a>
+    <div class="prev col-1">
+    <a href="/users?page=<%= currentPage - 1 %>"><i class="fa-solid fa-angle-left"></i></a>
+    </div>
   <% } %>
 
-  <span>Page <%= currentPage %> of <%= totalPages %></span>
-
+   <div class="page col-1">
+  <span><strong><%= currentPage %>   of  <%= totalPages %></strong></span>
+   </div>
   <% if (currentPage < totalPages) { %>
-    <a href="/users?page=<%= currentPage + 1 %>">Next ➡</a>
+    <div class="next col-1">
+     
+    <a href="/users?page=<%= currentPage + 1 %>"><i class="fa-solid fa-angle-right"></i></a>
+    </div>
   <% } %>
 </div>

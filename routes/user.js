@@ -9,10 +9,9 @@ const usercontroller = require('../controllers/user');
 const passport = require('passport');
 
 router
-.route('/signup')
+.route('/signin')
 .get(usercontroller.signup)
-.post(upload.single("profilePhoto"),
-wrapasync(usercontroller.signupPost));
+.post(wrapasync(usercontroller.signupPost));
 
 router
 .route('/login')
