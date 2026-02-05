@@ -1,21 +1,30 @@
 <% layout("/layouts/boilerplate.ejs") %>
-  
-<!-- <h3>Welcome <%= user.username %></h3> -->
-<h2>Your Skills:</h2>
+
+<h2>Your Skills</h2>
 
 <% if (user.skills && user.skills.length > 0) { %>
-  <% let skill = user.skills[user.skills.length - 1]; %>
-  <div>
-    <strong>Username:</strong> <%= skill.username%><br>
-    <strong>Location:</strong> <%= skill.location %><br>
-    <strong>Profile Photo:</strong><br>
-<img src="/<%= skill.profilePhoto %>" width="150" alt="Profile Photo">
+  <% const skill = user.skills[user.skills.length - 1]; %>
 
-    <strong>Skills Offered:</strong> <%= skill.skillsOffered %><br>
-    <strong>Skills Wanted:</strong> <%= skill.skillsWanted %><br>
-    <strong>Availability:</strong> <%= skill.availability %><br>
-  </div>
+  <strong>Username:</strong> <%= skill.username %><br>
+  <strong>Location:</strong> <%= skill.location %><br>
+
+  <% if (skill.profilePhoto) { %>
+    <img src="/<%= skill.profilePhoto %>" width="150">
+  <% } %>
+
+  <br>
+
+  <strong>Skills Offered:</strong>
+  <%= skill.skillsOffered? skill.skillsOffered : "Not added" %>
+  <br>
+
+  <strong>Skills Wanted:</strong>
+  <%= skill.skillsWanted ? skill.skillsWanted : "Not added" %>
+  <br>
+
+  <strong>Availability:</strong>
+  <%= skill.availability %>
+
 <% } else { %>
-  <p>No skill added yet.</p>
+  <p>No skills added yet.</p>
 <% } %>
-

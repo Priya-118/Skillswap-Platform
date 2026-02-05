@@ -32,6 +32,7 @@
         <% sentRequests.forEach(req => { %>
           <div class="card mb-2">
             <div class="card-body">
+              <h6>From: <%= req.sender%></h6>
               <h6>Sent to: <%= req.receiverName %></h6>
               <p><%= req.message %></p>
               <span class="badge bg-secondary"><%= req.status %></span>
