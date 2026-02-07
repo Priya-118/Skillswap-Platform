@@ -84,7 +84,7 @@ app.use('/', userRouter);
 app.get("/user/:id/detailuser", isloggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate("skills");
-    res.render("showdash", { user });
+    res.render("userdash", { user });
   } catch (err) {
     console.error(err);
     req.flash("error", "Unable to load dashboard");
