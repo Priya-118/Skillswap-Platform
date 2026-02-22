@@ -80,8 +80,8 @@ module.exports.userDashPost = async(req, res) => {
       skillsWanted,
       availability,
       user: req.user._id,
-      // isPublic,
     });
+    
     console.log(newSkill);
     await newSkill.save();
     const user = await User.findById(req.user._id);

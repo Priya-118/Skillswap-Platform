@@ -10,14 +10,14 @@ const skillSchema = new mongoose.Schema({
   type: String,
   default: "",
   },
-  skillsOffered: [{
+  skillsOffered: {
     type: [String],
     default: []
-  }],
-  skillsWanted: [{
+  },
+  skillsWanted: {
     type: [String],
     default: []
-  }],
+  },
   availability: String,
   user: {
     type: mongoose.Schema.Types.ObjectId,

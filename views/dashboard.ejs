@@ -1,0 +1,17 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<h2>Welcome <%= user.username %></h2>
+
+<h3>Your Profile</h3>
+
+<% if (user.skills.length > 0) { %>
+    <% user.skills.forEach(skill => { %>
+        <p><strong>Image:<%= skill.profilePhoto %></strong></p>
+        <p><strong>Location:</strong> <%= skill.location %></p>
+        <p><strong>Skills Offered:</strong> <%= skill.skillsOffered.join(", ") %></p>
+        <p><strong>Skills Wanted:</strong> <%= skill.skillsWanted.join(", ") %></p>
+        <p><strong>Availability:</strong> <%= skill.availability %></p>
+    <% }) %>
+<% } else { %>
+    <p>No profile created yet.</p>
+<% } %>

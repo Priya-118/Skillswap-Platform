@@ -16,9 +16,10 @@ const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 app.use(flash());
+const cloudinary = require("./cloudinary");
+const { storage } = require("./cloudConfig");
+// const upload = multer({ storage });
 // const path = require("path");
-
-
 
 
 
@@ -81,10 +82,63 @@ app.use('/', userRouter);
 
 
 // user dashboard
+// app.get("/user/:id/detailuser", isloggedIn, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user._id).populate("skills");
+//     res.render("userdash", { user });
+//   } catch (err) {
+//     console.error(err);
+//     req.flash("error", "Unable to load dashboard");
+//     res.redirect("/");
+//   }
+// });
+app.get("/completeprofile", isloggedIn, async (req, res) => {
+  res.render("completeProfile"); 
+});
+
+app.post("/completeprofile", isloggedIn, async (req, res) => {
+  try {
+
+    const { location, skillsOffered, skillsWanted, availability } = req.body;
+
+    const newSkill = new Skill({
+      username: req.user.username,
+      location,
+      skillsOffered: skillsOffered.split(",").map(s => s.trim()),
+      skillsWanted: skillsWanted.split(",").map(s => s.trim()),
+      availability,
+      user: req.user._id
+    });
+
+    await newSkill.save();
+
+    // Link skill to user
+    req.user.skills.push(newSkill._id);
+    await req.user.save();
+
+    res.redirect("/dashboard");
+
+  } catch (err) {
+    console.log(err);
+    res.redirect("/completeprofile");
+  }
+});
+
+app.get("/dashboard", isloggedIn, async (req, res) => {
+  const user = await User.findById(req.user._id).populate("skills");
+  res.render("dashboard", { user });
+});
+
 app.get("/user/:id/detailuser", isloggedIn, async (req, res) => {
   try {
+    if (req.params.id !== req.user._id.toString()) {
+      req.flash("error", "Unauthorized access");
+      return res.redirect("/");
+    }
+
     const user = await User.findById(req.user._id).populate("skills");
     res.render("userdash", { user });
+
   } catch (err) {
     console.error(err);
     req.flash("error", "Unable to load dashboard");
@@ -92,26 +146,64 @@ app.get("/user/:id/detailuser", isloggedIn, async (req, res) => {
   }
 });
 // Ensure both GET and POST use the same path if that's what your form points to
-app.post("/user/:id/detailuser", isloggedIn, async (req, res) => { // Added isloggedIn here
+// app.post("/user/:id/detailuser", isloggedIn, async (req, res) => { // Added isloggedIn here
+//   try {
+//     const{id}=req.params;
+//     const { username, location, skillsOffered, skillsWanted, availability } = req.body;
+
+//     const updateUser = await User.findByIdAndUpdate(id, {
+//       username,
+//       location,
+//       availability,
+//       // Safety check: only split if the value exists
+//       skillsOffered: skillsOffered ? skillsOffered.split(',').map(s => s.trim()) : [],
+//       skillsWanted: skillsWanted ? skillsWanted.split(',').map(s => s.trim()) : []
+//     }, { new: true });
+
+//     req.flash("success", "Profile updated!");
+//     res.redirect(`/user/${id}/detailuser`);
+//   } catch (err) {
+//     console.error(err);
+//     req.flash("error", "Something went wrong");
+//     res.redirect("/signin");
+//   }
+// });
+
+
+
+app.post("/user/:id/detailuser", isloggedIn, async (req, res) => {
   try {
-    const{id}=req.params;
+    if (req.params.id !== req.user._id.toString()) {
+      req.flash("error", "Unauthorized action");
+      return res.redirect("/");
+    }
+
     const { username, location, skillsOffered, skillsWanted, availability } = req.body;
 
-    const updateUser = await User.findByIdAndUpdate(id, {
-      username,
-      location,
-      availability,
-      // Safety check: only split if the value exists
-      skillsOffered: skillsOffered ? skillsOffered.split(',').map(s => s.trim()) : [],
-      skillsWanted: skillsWanted ? skillsWanted.split(',').map(s => s.trim()) : []
-    }, { new: true });
+    // Find the skill document of this user
+    const skill = await Skill.findOne({ user: req.user._id });
 
-    req.flash("success", "Profile updated!");
-    res.redirect(`/user/${id}/detailuser`);
+    if (!skill) {
+      req.flash("error", "Skill profile not found");
+      return res.redirect("/");
+    }
+
+    skill.username = username;
+    skill.location = location;
+    skill.availability = availability;
+    skill.skillsOffered = skillsOffered ? skillsOffered.split(',').map(s => s.trim()) : [];
+    skill.skillsWanted = skillsWanted ? skillsWanted.split(',').map(s => s.trim()) : [];
+
+    await skill.save();
+    console.log(skill);
+
+    req.flash("success", "Profile updated successfully!");
+    res.redirect(`/user/${req.user._id}/detailuser`);
+
   } catch (err) {
     console.error(err);
     req.flash("error", "Something went wrong");
-    res.redirect("/signin");
+    res.redirect("/");
   }
 });
 

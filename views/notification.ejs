@@ -1,45 +1,56 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
 <div class="container mt-4">
-  <h2>Swap Requests</h2>
+  <h2 class="mb-4">Swap Requests</h2>
   
   <ul class="nav nav-tabs mb-3" id="requestTabs" role="tablist">
     <li class="nav-item">
-      <button class="nav-link active" id="received-tab" data-bs-toggle="tab" data-bs-target="#received">Received</button>
+      <button class="nav-link active" id="received-tab" data-bs-toggle="tab" data-bs-target="#received" type="button" role="tab">Received</button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" id="sent-tab" data-bs-toggle="tab" data-bs-target="#sent">Sent</button>
+      <button class="nav-link" id="sent-tab" data-bs-toggle="tab" data-bs-target="#sent" type="button" role="tab">Sent</button>
     </li>
   </ul>
 
   <div class="tab-content">
-    <div class="tab-pane fade show active" id="received">
-      <% if (notifications.length > 0) { %>
+    <div class="tab-pane fade show active" id="received" role="tabpanel">
+      <% if (notifications && notifications.length > 0) { %>
         <% notifications.forEach(req => { %>
-          <div class="card mb-2">
+          <div class="card mb-3 shadow-sm">
             <div class="card-body">
-              <h6>From: <%= req.sender.username %></h6>
-              <p><%= req.message %></p>
-              <span class="badge bg-info"><%= req.status %></span>
+              <h6 class="card-title">From: <span class="text-primary"><%= req.sender.username %></span></h6>
+              <p class="card-text"><%= req.message %></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge <%= req.status === 'pending' ? 'bg-warning text-dark' : 'bg-success' %>">
+                  <%= req.status.toUpperCase() %>
+                </span>
+                <small class="text-muted"><%= req.createdAt.toDateString() %></small>
+              </div>
             </div>
           </div>
         <% }) %>
-      <% } else { %> <p>No received requests.</p> <% } %>
+      <% } else { %> 
+        <div class="alert alert-light">No received requests yet.</div> 
+      <% } %>
     </div>
 
-    <div class="tab-pane fade" id="sent">
-      <% if (sentRequests.length > 0) { %>
+    <div class="tab-pane fade" id="sent" role="tabpanel">
+      <% if (sentRequests && sentRequests.length > 0) { %>
         <% sentRequests.forEach(req => { %>
-          <div class="card mb-2">
+          <div class="card mb-3 shadow-sm border-start border-info" style="border-left-width: 5px !important;">
             <div class="card-body">
-              <h6>From: <%= req.sender%></h6>
-              <h6>Sent to: <%= req.receiverName %></h6>
-              <p><%= req.message %></p>
-              <span class="badge bg-secondary"><%= req.status %></span>
+              <h6 class="card-title">Sent to: <span class="text-info"><%= req.receiverName %></span></h6>
+              <p class="card-text"><%= req.message %></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-secondary"><%= req.status.toUpperCase() %></span>
+                <small class="text-muted"><%= req.createdAt ? req.createdAt.toDateString() : "" %></small>
+              </div>
             </div>
           </div>
         <% }) %>
-      <% } else { %> <p>You haven't sent any requests yet.</p> <% } %>
+      <% } else { %> 
+        <div class="alert alert-light">You haven't sent any requests yet.</div> 
+      <% } %>
     </div>
   </div>
 </div>
