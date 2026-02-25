@@ -56,7 +56,7 @@ const sessionOption = {
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: "mongodb://127.0.0.1:27017/skillSwap",
+    mongoUrl: process.env.MONGO_URL,
     ttl: 7 * 24 * 60 * 60
   }),
   cookie: {
