@@ -86,8 +86,11 @@
       <% for(let i=0; i < review.rating; i++) { %>
         <span>⭐</span> 
       <% } %>
+
       <% if (currUser && review.reviewer._id.toString() === currUser._id.toString()) { %>
+        <form class="mb-3" method="POST" action="/users/<%=user._id%>/review/<%= review._id %>?_method=DELETE">
         <button>Delete</button>
+        </form>
      <% } %>
      
     </div>

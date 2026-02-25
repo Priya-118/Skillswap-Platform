@@ -15,22 +15,6 @@ const userSchema = new mongoose.Schema({
   type:mongoose.Schema.Types.ObjectId,
   ref:'Skill',
   }],
-  requests:[{
-    sender:{
-      type:mongoose.Schema.Types.ObjectId,
-      ref:'User'
-    },
-    message:String,
-    status:{
-      type:String,
-      enum:['pending','accepted','rejected'],
-      default:'pending'
-    },
-    createdAt:{
-      type:Date,
-      default:Date.now
-    }
-  }]
 });
 
 userSchema.plugin(PassportLocalMongoose) //implemet hashing salting

@@ -1,3 +1,8 @@
+if(process.env.NODE_ENV != 'production') {
+   require('dotenv').config()
+}
+// console.log(process.env)
+
 const express = require("express");
 const session = require("express-session");
 const mongoose = require("mongoose");
@@ -7,6 +12,7 @@ const path = require("path");
 const User = require("./models/user");
 const Skill = require("./models/skill");
 const Review = require("./models/review");
+const Request = require("./models/request")
 const userRouter = require('./routes/user');
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -28,6 +34,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
@@ -92,59 +99,121 @@ app.use('/', userRouter);
 //     res.redirect("/");
 //   }
 // });
-app.get("/completeprofile", isloggedIn, async (req, res) => {
-  res.render("completeProfile"); 
-});
+// app.get("/completeprofile/:id", isloggedIn, async (req, res) => {
+//   const user = await User.findById(req.user._id);
+//   const {id}=req.params;
+//   res.render("completeProfile",{id}); 
+// });
 
-app.post("/completeprofile", isloggedIn, async (req, res) => {
-  try {
+// app.post("/completeprofile/:id", isloggedIn, async (req, res) => {
+//   try {
 
-    const { location, skillsOffered, skillsWanted, availability } = req.body;
+//     const { location, skillsOffered, skillsWanted, availability } = req.body;
+//     const{id}=req.params;
+//     console.log(req.body)
+//     const newSkill = new Skill({
+//       username: req.user.username,
+//       location,
+//       skillsOffered: skillsOffered ? skillsOffered.split(",").map(s => s.trim()) : [],
+//       skillsWanted: skillsWanted ? skillsWanted.split(",").map(s => s.trim()) : [],
+//       availability,
+//       user: req.user._id
+//     });
 
-    const newSkill = new Skill({
-      username: req.user.username,
-      location,
-      skillsOffered: skillsOffered.split(",").map(s => s.trim()),
-      skillsWanted: skillsWanted.split(",").map(s => s.trim()),
-      availability,
-      user: req.user._id
-    });
+//     await newSkill.save();
 
-    await newSkill.save();
+//     // Link skill to user
+//     req.user.skills.push(newSkill._id);
+//     await req.user.save();
 
-    // Link skill to user
-    req.user.skills.push(newSkill._id);
-    await req.user.save();
+//     res.redirect(`/dashboard/${id}`);
 
-    res.redirect("/dashboard");
+//   } catch (err) {
+//     console.log(err);
+//     res.redirect(`/completeprofile/${id}`);
+//     console.log("error")
+//   }
+// });
 
-  } catch (err) {
-    console.log(err);
-    res.redirect("/completeprofile");
+// app.get("/dashboard/:id", isloggedIn, async (req, res) => {
+//   const user = await User.findById(req.user._id).populate("skills");
+//   res.render("dashboard", { user });
+// });
+
+app.get("/users/:id/completeprofile", isloggedIn, async (req, res) => {
+  const { id } = req.params;
+
+  if (id !== req.user._id.toString()) {
+    return res.redirect("/login");
   }
+
+  res.render("completeProfile", { id });
 });
 
-app.get("/dashboard", isloggedIn, async (req, res) => {
-  const user = await User.findById(req.user._id).populate("skills");
+app.post("/users/:id/completeprofile", isloggedIn, async (req, res) => {
+  const { id } = req.params;
+
+  if (id !== req.user._id.toString()) {
+    return res.redirect("/login");
+  }
+
+  const { location, skillsOffered, skillsWanted, availability } = req.body;
+
+  const newSkill = await Skill.create({
+    username: req.user.username,
+    location,
+    skillsOffered: skillsOffered?.split(",").map(s => s.trim()) || [],
+    skillsWanted: skillsWanted?.split(",").map(s => s.trim()) || [],
+    availability,
+    user: id
+  });
+
+  await User.findByIdAndUpdate(
+  req.user._id,
+  { $push: { skills: newSkill._id } },
+  { new: true }
+);
+
+  res.redirect(`/users/${id}/dashboard`);
+});
+
+app.get("/users/:id/dashboard", isloggedIn, async (req, res) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id).populate("skills");
+
+  if (!user) {
+    return res.redirect("/");
+  }
+
   res.render("dashboard", { user });
 });
 
-app.get("/user/:id/detailuser", isloggedIn, async (req, res) => {
-  try {
-    if (req.params.id !== req.user._id.toString()) {
-      req.flash("error", "Unauthorized access");
-      return res.redirect("/");
-    }
+//edit
+// app.get("/skills/:id/edit", async (req, res) => { 
+//   const skill = await Skill.findById(req.params.id); 
+//   res.render("skills/edit", { skill }); 
+// });
 
-    const user = await User.findById(req.user._id).populate("skills");
-    res.render("userdash", { user });
+// app.put("/skills/:id", upload.single("profilePhoto"), async (req, res) => {
+//   const { location, skillsOffered, skillsWanted, availability } = req.body;
 
-  } catch (err) {
-    console.error(err);
-    req.flash("error", "Unable to load dashboard");
-    res.redirect("/");
-  }
-});
+//   let updatedData = {
+//     location,
+//     skillsOffered: skillsOffered.split(",").map(s => s.trim()),
+//     skillsWanted: skillsWanted.split(",").map(s => s.trim()),
+//     availability
+//   };
+
+//   // If user uploaded new image
+//   if (req.file) {
+//     updatedData.profilePhoto = req.file.filename;
+//   }
+
+//   await Skill.findByIdAndUpdate(req.params.id, updatedData);
+
+//   res.redirect("/dashboard");
+// });
 // Ensure both GET and POST use the same path if that's what your form points to
 // app.post("/user/:id/detailuser", isloggedIn, async (req, res) => { // Added isloggedIn here
 //   try {
@@ -170,42 +239,6 @@ app.get("/user/:id/detailuser", isloggedIn, async (req, res) => {
 // });
 
 
-
-app.post("/user/:id/detailuser", isloggedIn, async (req, res) => {
-  try {
-    if (req.params.id !== req.user._id.toString()) {
-      req.flash("error", "Unauthorized action");
-      return res.redirect("/");
-    }
-
-    const { username, location, skillsOffered, skillsWanted, availability } = req.body;
-
-    // Find the skill document of this user
-    const skill = await Skill.findOne({ user: req.user._id });
-
-    if (!skill) {
-      req.flash("error", "Skill profile not found");
-      return res.redirect("/");
-    }
-
-    skill.username = username;
-    skill.location = location;
-    skill.availability = availability;
-    skill.skillsOffered = skillsOffered ? skillsOffered.split(',').map(s => s.trim()) : [];
-    skill.skillsWanted = skillsWanted ? skillsWanted.split(',').map(s => s.trim()) : [];
-
-    await skill.save();
-    console.log(skill);
-
-    req.flash("success", "Profile updated successfully!");
-    res.redirect(`/user/${req.user._id}/detailuser`);
-
-  } catch (err) {
-    console.error(err);
-    req.flash("error", "Something went wrong");
-    res.redirect("/");
-  }
-});
 
 //index route
 // Updated Index Route
@@ -277,81 +310,171 @@ app.post("/users/:id/review", isloggedIn, async (req, res) => {
   req.flash("success", "Review added!");
   res.redirect(`/users/${id}`);
 });
+//DELETE REVIEW
+app.delete("/users/:id/review/:reviewId",async(req,res) =>{
+  let{id,reviewId}=req.params
+  await Skill.findByIdAndUpdate(id,{$pull:{review:reviewId}});
+  await Review.findByIdAndDelete(reviewId);
 
-app.get("/users/:id/request", async (req, res) => {
-  if (!req.user) {
-    return res.redirect("/login");
-  }
+  res.redirect(`/users/${id}`);
+
+});
+
+app.get("/users/:id/request", isloggedIn, async (req, res) => {
 
   const { id } = req.params;
-  const senderId = req.user._id;
 
-  const receiver = await User.findById(id); // consistent variable name
+  const receiver = await User.findById(id);
+
+  if (!receiver) {
+    return res.status(404).send("User not found");
+  }
 
   res.render("request", { user: receiver });
 });
 
-app.post("/users/:id/request", async (req, res) => {
+app.post("/users/:id/request", isloggedIn, async (req, res) => {
+
   const { id } = req.params;
   const { message } = req.body;
+
   const senderId = req.user._id;
-  const receiver = await User.findById(id);
-  if (!senderId) {
-    res.redirect("/login");
+
+  if (!message) {
+    req.flash("error", "Message cannot be empty");
+    return res.redirect(`/users/${id}`);
   }
+
+  const receiver = await User.findById(id);
   if (!receiver) {
     return res.status(404).send("User not found");
   }
-  receiver.requests.push({
+
+  // Optional: prevent duplicate pending request
+  const existingRequest = await Request.findOne({
     sender: senderId,
-    message,
-    status: "pending",
+    receiver: id,
+    status: "pending"
   });
-  await receiver.save();
+
+  if (existingRequest) {
+    req.flash("error", "Request already sent.");
+    return res.redirect(`/users/${id}`);
+  }
+
+  await Request.create({
+    sender: senderId,
+    receiver: id,
+    message
+  });
+
   req.flash("success", "Request sent successfully!");
   res.redirect(`/users/${id}`);
 });
 
-app.get('/notification', isloggedIn, async (req, res) => {
+app.get("/notification", isloggedIn, async (req, res) => {
+
   try {
-    // 1. Requests RECEIVED (Existing logic)
-    const user = await User.findById(req.user._id).populate({
-      path: 'requests.sender',
-      select: 'username email'
-    });
-    const receivedRequests = user.requests;
 
-    // 2. Requests SENT (New logic)
-    // Find all users who have a request from the current logged-in user
-    const sentToUsers = await User.find({ "requests.sender": req.user._id })
-      .select("username requests") // Get the username of the person you requested
-      .lean();
+    // 🔹 Requests RECEIVED
+    const receivedRequests = await Request.find({
+      receiver: req.user._id
+    })
+    .populate("sender", "username email")
+    .sort({ createdAt: -1 });
 
-    // Filter out only the specific request objects you sent to those users
-    let sentRequests = [];
-    sentToUsers.forEach(u => {
-      u.requests.forEach(r => {
-        if (r.sender.toString() === req.user._id.toString()) {
-          sentRequests.push({
-            receiverName: u.username,
-            message: r.message,
-            status: r.status,
-            createdAt: r.createdAt
-          });
-        }
-      });
+    // 🔹 Requests SENT
+    const sentRequests = await Request.find({
+      sender: req.user._id
+    })
+    .populate("receiver", "username email")
+    .sort({ createdAt: -1 });
+
+    res.render("notification.ejs", {
+      notifications: receivedRequests,
+      sentRequests
     });
 
-    res.render('notification.ejs', { 
-      notifications: receivedRequests, 
-      sentRequests: sentRequests 
-    });
   } catch (err) {
     console.error(err);
     req.flash("error", "Could not load requests.");
     res.redirect("/users");
   }
 });
+// app.get("/users/:id/request", async (req, res) => {
+//   if (!req.user) {
+//     return res.redirect("/login");
+//   }
+
+//   const { id } = req.params;
+//   const senderId = req.user._id;
+
+//   const receiver = await User.findById(id); // consistent variable name
+
+//   res.render("request", { user: receiver });
+// });
+
+// app.post("/users/:id/request", async (req, res) => {
+//   const { id } = req.params;
+//   const { message } = req.body;
+//   const senderId = req.user._id;
+//   const receiver = await User.findById(id);
+//   if (!senderId) {
+//     res.redirect("/login");
+//   }
+//   if (!receiver) {
+//     return res.status(404).send("User not found");
+//   }
+//   receiver.requests.push({
+//     sender: senderId,
+//     message,
+//     status: "pending",
+//   });
+//   await receiver.save();
+//   req.flash("success", "Request sent successfully!");
+//   res.redirect(`/users/${id}`);
+// });
+
+// app.get('/notification', isloggedIn, async (req, res) => {
+//   try {
+//     // 1. Requests RECEIVED (Existing logic)
+//     const user = await User.findById(req.user._id).populate({
+//       path: 'requests.sender',
+//       select: 'username email'
+//     });
+//     const receivedRequests = user.requests;
+
+//     // 2. Requests SENT (New logic)
+//     // Find all users who have a request from the current logged-in user
+//     const sentToUsers = await User.find({ "requests.sender": req.user._id })
+//       .select("username requests") // Get the username of the person you requested
+//       .lean();
+
+//     // Filter out only the specific request objects you sent to those users
+//     let sentRequests = [];
+//     sentToUsers.forEach(u => {
+//       u.requests.forEach(r => {
+//         if (r.sender.toString() === req.user._id.toString()) {
+//           sentRequests.push({
+//             receiverName: u.username,
+//             message: r.message,
+//             status: r.status,
+//             createdAt: r.createdAt
+//           });
+//         }
+//       });
+//     });
+
+//     res.render('notification.ejs', { 
+//       notifications: receivedRequests, 
+//       sentRequests: sentRequests 
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     req.flash("error", "Could not load requests.");
+//     res.redirect("/users");
+//   }
+// });
 
 const port = 4000;
 app.listen(port, () => {

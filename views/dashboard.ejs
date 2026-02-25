@@ -1,17 +1,103 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
-<h2>Welcome <%= user.username %></h2>
+<div class="container mt-4">
 
-<h3>Your Profile</h3>
+  <!-- Header -->
+  <div class="mb-4">
+    <h2 class="fw-bold">Welcome <%= user.username %></h2>
+    <p class="text-muted">Your professional profile overview</p>
+  </div>
 
-<% if (user.skills.length > 0) { %>
+  <% if (user.skills.length > 0) { %>
     <% user.skills.forEach(skill => { %>
-        <p><strong>Image:<%= skill.profilePhoto %></strong></p>
-        <p><strong>Location:</strong> <%= skill.location %></p>
-        <p><strong>Skills Offered:</strong> <%= skill.skillsOffered.join(", ") %></p>
-        <p><strong>Skills Wanted:</strong> <%= skill.skillsWanted.join(", ") %></p>
-        <p><strong>Availability:</strong> <%= skill.availability %></p>
+
+    <!-- Profile Card -->
+    <div class="card shadow-sm border-0 mb-4 p-4">
+
+      <div class="row">
+
+        <!-- Left: Profile Image -->
+        <div class="col-md-3 text-center">
+          <img src="<%= skill.profilePhoto || '/default-avatar.png' %>" 
+               class="rounded-circle border p-1"
+               width="120" height="120">
+          <div class="mt-2">
+            <span class="badge bg-success">Active Member</span>
+          </div>
+        </div>
+
+        <!-- Right: Profile Info -->
+        <div class="col-md-9">
+
+          <!-- Location -->
+          <div class="mb-3">
+            <h6 class="text-primary">Location</h6>
+            <p><%= skill.location %></p>
+          </div>
+
+          <hr>
+
+          <!-- Skills Offered -->
+          <div class="mb-3">
+            <h6 class="text-primary">Skills Offered</h6>
+            <% skill.skillsOffered.forEach(s => { %>
+              <span class="badge bg-primary me-2"><%= s %></span>
+            <% }) %>
+          </div>
+
+          <hr>
+
+          <!-- Skills Wanted -->
+          <div class="mb-3">
+            <h6 class="text-primary">Skills Wanted</h6>
+            <% skill.skillsWanted.forEach(s => { %>
+              <span class="badge bg-info text-dark me-2"><%= s %></span>
+            <% }) %>
+          </div>
+
+          <hr>
+
+          <!-- Availability -->
+          <div>
+            <h6 class="text-primary">Availability</h6>
+            <p><%= skill.availability %></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row text-center mb-5">
+      
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm p-4">
+          <h3 class="text-primary"><%= skill.skillsOffered.length %></h3>
+          <p class="text-muted mb-0">Skills Offered</p>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm p-4">
+          <h3 class="text-primary"><%= skill.skillsWanted.length %></h3>
+          <p class="text-muted mb-0">Skills Wanted</p>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm p-4">
+          <h3 class="text-success">100%</h3>
+          <p class="text-muted mb-0">Profile Complete</p>
+        </div>
+      </div>
+
+    </div>
+
     <% }) %>
-<% } else { %>
-    <p>No profile created yet.</p>
-<% } %>
+  <% } else { %>
+    <div class="alert alert-info">
+      No profile created yet.
+    </div>
+  <% } %>
+
+</div>

@@ -39,7 +39,7 @@
         <% sentRequests.forEach(req => { %>
           <div class="card mb-3 shadow-sm border-start border-info" style="border-left-width: 5px !important;">
             <div class="card-body">
-              <h6 class="card-title">Sent to: <span class="text-info"><%= req.receiverName %></span></h6>
+              <h6 class="card-title">Sent to: <span class="text-info"><%= req.receiver.username %></span></h6>
               <p class="card-text"><%= req.message %></p>
               <div class="d-flex justify-content-between align-items-center">
                 <span class="badge bg-secondary"><%= req.status.toUpperCase() %></span>
@@ -54,3 +54,4 @@
     </div>
   </div>
 </div>
+

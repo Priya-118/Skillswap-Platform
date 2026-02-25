@@ -20,7 +20,7 @@ module.exports.signupPost = async (req, res, next) => {
     req.login(RegisterUser, (err) => {
       if (err) return next(err); 
       req.flash("success", "Welcome to SkillSwap");
-      res.redirect(`/user/${RegisterUser._id}/detailuser`);
+      res.redirect(`/users/${RegisterUser._id}/completeprofile`);
     });
   } catch (e) {
     req.flash("error", `${e.message}`);

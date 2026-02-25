@@ -1,27 +1,46 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
-<form action="/completeprofile" method="POST">
-   <div>
-    <label for="profilePhoto">Profile Photo:</label>
-    <!-- Or, if uploading a file: -->
-    <input type="file" id="profilePhoto" name="profilePhoto">
-  
+<div class="form-container">
+  <div class="form-card">
+    <h2 class="form-title">Complete Your Profile</h2>
+
+    <form action="/users/<%= id %>/completeprofile"  method="POST" enctype="multipart/form-data">
+
+      <div class="form-group">
+        <label>Profile Photo</label>
+        <input type="file" name="profilePhoto">
+      </div>
+
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" name="location" required>
+      </div>
+
+      <div class="form-group">
+        <label>Skills Offered</label>
+        <input type="text" name="skillsOffered"
+               placeholder="e.g. Python, Django, React" required>
+      </div>
+
+      <div class="form-group">
+        <label>Skills Wanted</label>
+        <input type="text" name="skillsWanted"
+               placeholder="e.g. Web Design, GitHub" required>
+      </div>
+
+      <div class="form-group">
+        <label>Availability</label>
+        <select name="availability" required>
+          <option value="Weekdays">Weekdays</option>
+          <option value="Weekends">Weekends</option>
+          <option value="Evenings">Evenings</option>
+        </select>
+      </div>
+
+      <button  type="submit" class="btn-submit">
+        Save Profile
+      </button>
+
+    </form>
   </div>
-
-  <input type="text" name="location" placeholder="Location" required>
-
-  <input type="text" name="skillsOffered" 
-         placeholder="Skills Offered (comma separated)" required>
-
-  <input type="text" name="skillsWanted" 
-         placeholder="Skills Wanted (comma separated)" required>
-
-  <select name="availability" required>
-    <option value="Weekdays">Weekdays</option>
-    <option value="Weekends">Weekends</option>
-    <option value="Evenings">Evenings</option>
-  </select>
-
-  <button type="submit">Save Profile</button>
-
-</form>
+</div>

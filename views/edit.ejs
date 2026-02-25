@@ -1,0 +1,38 @@
+
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+  <h2>Edit Profile</h2>
+
+  <form action="/skills/<%= skill._id %>?_method=PUT" method="POST">
+
+    <div class="mb-3">
+      <label>Location</label>
+      <input type="text" name="location" class="form-control"
+             value="<%= skill.location %>">
+    </div>
+
+    <div class="mb-3">
+      <label>Skills Offered (comma separated)</label>
+      <input type="text" name="skillsOffered" class="form-control"
+             value="<%= skill.skillsOffered.join(', ') %>">
+    </div>
+
+    <div class="mb-3">
+      <label>Skills Wanted (comma separated)</label>
+      <input type="text" name="skillsWanted" class="form-control"
+             value="<%= skill.skillsWanted.join(', ') %>">
+    </div>
+
+    <div class="mb-3">
+      <label>Availability</label>
+      <input type="text" name="availability" class="form-control"
+             value="<%= skill.availability %>">
+    </div>
+
+    <button type="submit" class="btn btn-success">
+      Save Changes
+    </button>
+
+  </form>
+</div>

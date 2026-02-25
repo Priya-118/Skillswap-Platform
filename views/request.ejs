@@ -10,11 +10,26 @@
 </form>
 
 </div> -->
-<h4>Don't forget to give your valuable comment </h4>
+<!-- <h4>Don't forget to give your valuable comment </h4>
 <div id="request" style="border: 1px solid grey; padding: 10px;">
   <form action="/users/<%= user._id %>/request" method="POST">
     <textarea placeholder="add your comment"></textarea> 
     <button type="submit">Send Request</button>
-  </form>
+  </form> -->
 
+  <h4>Don't forget to give your valuable comment</h4>
+
+<div id="request" style="border: 1px solid grey; padding: 10px;">
+  <form action="/users/<%= user._id %>/request" method="POST">
+    
+    <textarea 
+      name="message" 
+      placeholder="add your comment" 
+      required>
+    </textarea> 
+
+    <button type="submit">Send Request</button>
+
+  </form>
+</div>
 </div>
