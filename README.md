@@ -23,7 +23,7 @@ A backend-driven Skill Swap platform that enables users to exchange skills witho
 3. Run npm install
 4. Run npm start
 
-🚀 [Live Demo](https://your-app-name.onrender.com)
+🚀 [Live Demo][(https://skillswap-platform-5juc.onrender.com/users]
 
 Demo Account:
 Email: demo@gmail.com
