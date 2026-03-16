@@ -82,8 +82,10 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("working");
+  res.render('home')
 });
+
+
 
 //Routes
 app.use('/', userRouter);
@@ -477,6 +479,10 @@ app.get("/notification", isloggedIn, async (req, res) => {
 //     res.redirect("/users");
 //   }
 // });
+
+app.all("*", (req, res) => {
+  res.status(404).render("error/404");
+});
 
 const port = 4000;
 app.listen(port, () => {

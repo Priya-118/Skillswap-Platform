@@ -17,19 +17,27 @@
     <button type="submit">Send Request</button>
   </form> -->
 
-  <h4>Don't forget to give your valuable comment</h4>
+<div id="request" class="card shadow-sm p-4 mt-4 col-8 offset-2">
 
-<div id="request" style="border: 1px solid grey; padding: 10px;">
+  <h5 class="mb-3">Send Skill Swap Request</h5>
+
   <form action="/users/<%= user._id %>/request" method="POST">
-    
-    <textarea 
-      name="message" 
-      placeholder="add your comment" 
-      required>
-    </textarea> 
 
-    <button type="submit">Send Request</button>
+    <div class="mb-3">
+      <textarea 
+        name="message" 
+        class="form-control"
+        rows="4"
+        placeholder="Add your message..."
+        required>
+      </textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      Send Request
+    </button>
 
   </form>
+
 </div>
 </div>
