@@ -9,7 +9,7 @@ const usercontroller = require('../controllers/user');
 const passport = require('passport');
 
 router
-.route('/signin')
+.route('/signup')
 .get(usercontroller.signup)
 .post(wrapasync(usercontroller.signupPost));
 
